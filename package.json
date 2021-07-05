@@ -1,18 +1,21 @@
 {
     "name": "p3x-onenote",
-    "version": "2020.10.105",
+    "version": "2021.4.197",
     "description": "📚 P3X OneNote Linux",
     "main": "src/electron/app.js",
     "corifeus": {
+        "description-snap": "P3X OneNote Linux",
+        "description-npm": "📚 P3X OneNote Linux",
         "snap": true,
         "prefix": "p3x-",
         "publish": true,
         "type": "p3x",
         "code": "Linux",
-        "nodejs": "v12.18.2",
+        "nodejs": "v14.17.0",
         "reponame": "onenote",
         "build": true,
-        "opencollective": false
+        "opencollective": false,
+        "install-appimage-launcher": "sudo add-apt-repository ppa:appimagelauncher-team/stable && sudo apt install -y appimagelauncher"
     },
     "bin": {
         "p3x-onenote": "bin/p3x-onenote.js"
@@ -21,12 +24,14 @@
         "test": "grunt",
         "build": "electron-builder --x64  build/dist",
         "build-test": "electron-builder build/dist -p always",
-        "postinstall": "opencollective postinstall",
+        "postinstall-save": "opencollective postinstall",
         "start": "node ./node_modules/.bin/electron ./src/electron/app.js",
-        "publish-electron": "rm -rf dist && electron-builder -p onTagOrDraft --ia32 --x64 --linux",
-        "publish-electron-arm": "rm -rf dist && electron-builder --armv7l --arm64 --linux --publish=always",
-        "publish-electron-arm-test": "rm -rf dist && electron-builder --armv7l --arm64 --linux",
-        "publish-electron-snap": "electron-builder --linux snap -p never",
+        "publish-electron": "rm -rf dist && mkdir -p ./dist/__appImage-x64 && mkdir -p ./dist/__appImage-ia32 && electron-builder -p onTagOrDraft --linux --ia32 --x64",
+        "publish-electron-arm": "rm -rf dist && mkdir -p ./dist/__appImage-armv7l && mkdir -p ./dist/__appImage-arm64 && electron-builder --armv7l --arm64 --linux --publish=always",
+        "publish-electron-dep": "rm -rf dist && electron-builder --linux deb --publish=always",
+        "publish-electron-rpm": "rm -rf dist && electron-builder --linux rpm --publish=always",
+        "publish-electron-arm-test": "rm -rf dist && mkdir -p ./dist/__appImage-armv7l && mkdir -p ./dist/__appImage-arm64 && electron-builder --armv7l --arm64 --linux",
+        "publish-electron-snap": "rm -rf dist && mkdir -p ./dist/__snap-amd64 && electron-builder --linux snap -p never",
         "publish-electron-yml": "node ./node_modules/corifeus-builder/src/utils/appimage/post-build.js"
     },
     "repository": {
@@ -44,23 +49,24 @@
     },
     "homepage": "https://corifeus.com/onenote",
     "dependencies": {
-        "@fortawesome/fontawesome-free": "^5.13.1",
-        "angular": "^1.8.0",
-        "angular-animate": "^1.8.0",
-        "angular-aria": "^1.8.0",
-        "angular-material": "^1.1.24",
-        "angular-messages": "^1.8.0",
+        "@electron/remote": "^1.1.0",
+        "@fontsource/roboto": "^4.4.5",
+        "@fortawesome/fontawesome-free": "^5.15.3",
+        "angular": "^1.8.2",
+        "angular-animate": "^1.8.2",
+        "angular-aria": "^1.8.2",
+        "angular-material": "^1.2.2",
+        "angular-messages": "^1.8.2",
         "configstore": "^4.0.0",
-        "corifeus-utils": "^2020.4.206",
-        "electron-updater": "^4.3.1",
+        "corifeus-utils": "^2021.4.128",
+        "electron-updater": "^4.3.9",
         "opencollective": "^1.0.3",
-        "semver": "^7.3.2",
-        "typeface-roboto": "0.0.75",
-        "electron": "^9.1.0"
+        "semver": "^7.3.5",
+        "electron": "^13.1.2"
     },
     "devDependencies": {
-        "corifeus-builder": "^2020.10.100",
-        "electron-builder": "^22.7.0"
+        "corifeus-builder": "^2021.4.141",
+        "electron-builder": "^22.11.7"
     },
     "engines": {
         "node": ">=12.13.0"

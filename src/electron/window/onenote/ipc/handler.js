@@ -13,7 +13,8 @@ const handler = (options) => {
 
         //console.log('p3x-onenote-onload-user', data)
 
-        if (typeof (global.p3x.onenote.data) === 'object' && global.p3x.onenote.data.hasOwnProperty('url') && global.p3x.onenote.data.url !== 'about:blank') {
+
+        if (typeof (global.p3x.onenote.data) === 'object' && global.p3x.onenote.data.hasOwnProperty('url') && !global.p3x.onenote.data.url.startsWith('about:blank')) {
             webview.src = global.p3x.onenote.data.url;
         } else {
             webview.src = 'https://www.onenote.com/notebooks'
@@ -51,7 +52,7 @@ const handler = (options) => {
         } finally {
             if (!cancelled) {
                 if (type === 'corporate') {
-                    global.p3x.onenote.webview.src = 'https://www.onenote.com/notebooks?auth=2&auth_upn=my_corporate_email_address&omkt=' + data.translation
+                    global.p3x.onenote.webview.src = 'https://www.onenote.com/notebooks?auth=2&omkt=' + data.translation
                 } else {
                     global.p3x.onenote.webview.src = 'https://www.onenote.com/notebooks?omkt=' + data.translation
                 }
@@ -81,6 +82,26 @@ const handler = (options) => {
             }
         }
     })
+
+    ipcRenderer.on('p3x-onenote-action-bookmark-open', (event, data) => {
+        global.p3x.onenote.webview.src = data.url
+    })
+
+    ipcRenderer.on('p3x-onenote-action-bookmark-add', async (event, data) => {
+        try {
+            const result = await global.p3x.onenote.prompt.bookmarks(data);
+            ipcRenderer.send('p3x-onenote-action-bookmark-result', result);
+
+        } catch (e) {
+            if (e !== undefined) {
+                alert(e.message)
+                console.error(e);
+            }
+        }
+    })
+
+
+
 
 }
 

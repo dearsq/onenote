@@ -38,12 +38,16 @@ const handler = (options) => {
             }
             */
 
-            if (global.p3x.onenote.root.p3x.onenote.location !== webview.src) {
-                global.p3x.onenote.root.p3x.onenote.location = webview.src
-                global.p3x.onenote.data.url = webview.src
-                global.p3x.onenote.root.$digest()
-                ipc.send('p3x-onenote-save', global.p3x.onenote.data);
+
+            if (global.p3x.onenote.root && global.p3x.onenote.root.p3x.onenote.location !== webview.src) {
+                p3x.onenote.wait.angular(() => {
+                        global.p3x.onenote.root.p3x.onenote.location = webview.src
+                        global.p3x.onenote.data.url = webview.src
+                        global.p3x.onenote.root.$digest()
+                        ipc.send('p3x-onenote-save', global.p3x.onenote.data);
+                })
             }
+
         }, p3x.onenote.wrongUrlTimeout)
     }
 
@@ -87,8 +91,11 @@ const handler = (options) => {
         global.p3x.onenote.data.url = webview.src;
         ipc.send('p3x-onenote-save', global.p3x.onenote.data);
 
-        global.p3x.onenote.root.p3x.onenote.location = webview.src
-        global.p3x.onenote.root.$digest()
+        p3x.onenote.wait.angular(() => {
+            global.p3x.onenote.root.p3x.onenote.location = webview.src
+            global.p3x.onenote.root.$digest()
+        })
+
     });
 
     webview.addEventListener("dom-ready", event => {
@@ -96,6 +103,7 @@ const handler = (options) => {
         webview.blur();
         webview.focus();
 
+        p3x.onenote.domReady = true
 
         if (process.env.NODE_ENV === 'debug') {
             webview.openDevTools()
@@ -103,12 +111,12 @@ const handler = (options) => {
 
     });
 
-    webview.addEventListener('new-window', async function (event) {
+    webview.addEventListener('new-window', function (event) {
 
         event.preventDefault()
         //p3x.onenote.toast.action(p3x.onenote.lang.label.unknownLink)
 
-        if (event.url.trim() === 'about:blank') {
+        if (event.url.trim().startsWith('about:blank')) {
             //webview.src = event.url;
             return
         }
