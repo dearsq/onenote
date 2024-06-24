@@ -1,16 +1,21 @@
-const configstore = require('configstore');
 const pkg = require('../../package.json');
-const conf = new configstore(pkg.name);
+const Store = require('electron-store');
+const conf = new Store();
 
 const {app} = require('electron');
-app.allowRendererProcessReuse = true
+//app.allowRendererProcessReuse = true
+//app.disableHardwareAcceleration()
 
 let translationKey = conf.get('lang')
 if (translationKey === undefined) {
     translationKey = 'en-US'
     conf.set('lang', translationKey)
 }
-
+let darkThemeInvert = conf.get('darkThemeInvert')
+if (darkThemeInvert === undefined) {
+    darkThemeInvert = false
+    conf.set('darkThemeInvert', darkThemeInvert)
+}
 const path = require('path')
 
 const langTranslations = {
@@ -18,6 +23,15 @@ const langTranslations = {
     'de-DE': require('../translation/de-DE'),
     'pt-BR': require('../translation/pt-BR'),
     'es-ES': require('../translation/es-ES'),
+    'fr-FR': require('../translation/fr-FR'),
+    'nl-NL': require('../translation/nl-NL'),
+    'it-IT': require('../translation/it-IT'),
+    'zh-CN': require('../translation/zh-CN'),
+    'ru-RU': require('../translation/ru-RU'),
+    'pl-PL': require('../translation/pl-PL'),
+    'tr-TR': require('../translation/tr-TR'),
+    'ja-JP': require('../translation/ja-JP'),
+
 }
 
 const translation = langTranslations[translationKey]
@@ -25,6 +39,7 @@ const translation = langTranslations[translationKey]
 global.p3x = {
     onenote: {
         pkg: pkg,
+        darkThemeInvert: darkThemeInvert,
         lang: translation,
         translationKey: translationKey,
         translations: undefined,
@@ -33,7 +48,8 @@ global.p3x = {
         disableHide: true,
         allowMultiple: false,
         optionToDisableInternalExternalPopup: false,
-        iconFile: path.resolve(`${__dirname}/images/256x256.png`),
+        optionToHideMenu: false,
+        iconFile: path.resolve(`${__dirname}/images/128x128.png`),
         tray: undefined,
         window: {
             onenote: undefined,
@@ -42,6 +58,7 @@ global.p3x = {
         menus: undefined,
         mainMenu: undefined,
         setVisible: undefined,
+        bookmarksEditMode: false,
         createWindow: {
             onenote: undefined,
         },
@@ -58,6 +75,13 @@ global.p3x.onenote.disableHide = conf.get('disable-hide')
 if (global.p3x.onenote.disableHide === undefined) {
     conf.set('disable-hide', true)
     global.p3x.onenote.disableHide = true;
+}
+
+// optionToHideMenu
+global.p3x.onenote.optionToHideMenu = conf.get('option-to-hide-menu')
+if (global.p3x.onenote.optionToHideMenu === undefined) {
+    conf.set('option-to-hide-menu', false)
+    global.p3x.onenote.optionToHideMenu = false;
 }
 
 // configuration

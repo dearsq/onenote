@@ -1,7 +1,14 @@
 const translation = {
     title: 'P3X OneNote',
+    restart: 'Espere, la aplicación se está reiniciando.',
     label: {
-        hideMenu: 'Esconder Menú Principal',
+        darkThemeInvert: {
+            title: 'Habilite el modo oscuro con peculiaridades (usando invertir)'
+        },
+        hideMenu: 'Ocultar el menú principal (mostrar con ALT)',
+        optionToHideMenuState: {
+            yes: 'Después de reiniciar, ocultará el menú y se mostrará en ALT.',
+        },
         donate: 'Donar',
         allowMultiple: {
             checkbox: 'Permitir múltiples instancias (podría haber algún comportamiento extraño)',
@@ -39,6 +46,9 @@ const translation = {
         copyLocationCopied: 'Dirección copiada al portapapeles.',
         //disallowedContent: '¡Contenido no permitido!.Si no funciona, espere. Se reseteará al home por defecto. (Máx 5 segundos).',
         //unknownLink: 'Espere, cambiará mientras carga el destino. Si esto no es una página de OneNote, haga clic en el menú dentro de P3X OneNote home'
+        back: 'Espalda',
+        forward: 'Adelante',
+
     },
     dialog: {
         info: 'Info',
@@ -74,7 +84,7 @@ const translation = {
         save: 'Salvar',
         clear: 'Limpiar',
         go: 'Ir',
-
+        delete: 'Eliminar',
     },
     menu: {
         action: 'Acción',
@@ -116,6 +126,15 @@ const translation = {
                 'de-DE': 'Alemán / German',
                 'pt-BR': 'Português / Portuguese',
                 'es-ES': 'Español / Spanish',
+                'fr-FR': 'Français / French',
+                'nl-NL': 'Nederlands / Dutch',
+                'it-IT': 'Italiano / Italian',
+                'zh-CN': '简体中文 / Simplified Chinese',
+                'ru-RU': 'Русский / Russian',
+                'pl-PL': 'Polski / Polish',
+                'tr-TR': 'Türkçe / Turkish',
+                'ja-JP': '日本語 / Japanese',
+
             }
         },
     },
@@ -132,7 +151,20 @@ const translation = {
             return 'Bajado ' + opts.progressObj.percent + '%'
         },
         'update-downloaded': 'Actualización bajada. Reinicie la aplicación para actualizar.'
-    }
+    },
+    bookmarks: {
+        title: 'Marcadores',
+        add: 'Añadir marcador',
+        edit: 'Editar marcadores',
+        form: {
+            title: 'Título',
+            url: 'URL'
+        }
+    },
+    validation: {
+        required: 'Necesaria',
+        url: 'URL invalida',
+    },
 };
 
 module.exports = translation;

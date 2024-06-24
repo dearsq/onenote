@@ -1,7 +1,14 @@
 const translation = {
     title: 'P3X OneNote',
+    restart: 'Please hang on, the application is restarting.',
     label: {
-        hideMenu: 'Hide main menu',
+        darkThemeInvert: {
+          title: 'Enable dark mode with quirks (using invert)'
+        },
+        hideMenu: 'Hide main menu (show with ALT)',
+        optionToHideMenuState: {
+            yes: 'After restart, it will hide the menu and show on ALT.',
+        },
         donate: 'Donate',
         allowMultiple: {
             checkbox: 'Allow multiple instances (with some quirks)',
@@ -38,7 +45,9 @@ const translation = {
         copyLocation: 'Copy this location to the clipboard',
         copyLocationCopied: 'The location is copied to the clipboard.',
         //disallowedContent: 'Disallowed content! If not working, hang on, it will reset to the default home. (Max 5 seconds).',
-        //unknownLink: 'Hang on, it might change while loading to the destination. If this is not a OneNote page, free to click on the P3X OneNote menu home'
+        //unknownLink: 'Hang on, it might change while loading to the destination. If this is not a OneNote page, free to click on the P3X OneNote menu home',
+        back: 'Back',
+        forward: 'Forward',
     },
     dialog: {
         info: 'Info',
@@ -74,7 +83,7 @@ const translation = {
         save: 'Save',
         clear: 'Clear',
         go: 'Go',
-
+        delete: 'Delete',
     },
     menu: {
         action: 'Action',
@@ -116,6 +125,15 @@ const translation = {
                 'de-DE': 'Deutsch / German',
                 'pt-BR': 'Português / Portuguese',
                 'es-ES': 'Español / Spanish',
+                'fr-FR': 'Français / French',
+                'nl-NL': 'Nederlands / Dutch',
+                'it-IT': 'Italiano / Italian',
+                'zh-CN': '简体中文 / Simplified Chinese',
+                'ru-RU': 'Русский / Russian',
+                'pl-PL': 'Polski / Polish',
+                'tr-TR': 'Türkçe / Turkish',
+                'ja-JP': '日本語 / Japanese',
+
             }
         },
     },
@@ -132,7 +150,20 @@ const translation = {
             return 'Downloaded ' + opts.progressObj.percent + '%'
         },
         'update-downloaded': 'Update downloaded. You may restart the app to update.'
-    }
+    },
+    bookmarks: {
+        title: 'Bookmarks',
+        add: 'Add bookmark',
+        edit: 'Edit bookmarks',
+        form: {
+            title: 'Title',
+            url: 'URL'
+        }
+    },
+    validation: {
+        required: 'Required',
+        url: 'Invalid url',
+    },
 };
 
 module.exports = translation;

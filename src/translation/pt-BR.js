@@ -1,7 +1,14 @@
 const translation = {
     title: 'P3X OneNote',
+    restart: 'Aguarde, o aplicativo está reiniciando.',
     label: {
-        hideMenu: 'Mostrar menu principal',
+        darkThemeInvert: {
+            title: 'Ative o modo escuro com peculiaridades (usando inverter)'
+        },
+        hideMenu: 'Esconder o menu principal (mostrar com ALT)',
+        optionToHideMenuState: {
+            yes: 'Após reiniciar, ele irá ocultar o menu e mostrar no ALT.',
+        },
         donate: 'Doar',
         allowMultiple: {
             checkbox: 'Permitir múltiplas instâncias (com algumas pecularidades)',
@@ -11,8 +18,8 @@ const translation = {
             }
         },
         disableHide: {
-            //yes: 'Set the close button behaviour that will minimize to the tray instead of quitting',
-            //no: 'Set the close button behaviour as to really quit the app',
+            yes: 'Defina o comportamento do botão Fechar que irá minimizar para a bandeja em vez de sair',
+            no: 'Defina o comportamento do botão Fechar para realmente sair da aplicação',
             checkbox: 'Fechar bandeja',
             message: {
                 yes: 'O botão de fechar realmente fecha o app.',
@@ -37,8 +44,10 @@ const translation = {
         hide: 'Esconder',
         copyLocation: 'Copiar para área de transferência',
         copyLocationCopied: 'A localização foi copiada para a área de transferência.',
-        //disallowedContent: 'Disallowed content! If not working, hang on, it will reset to the default home. (Max 5 seconds).',
-        //unknownLink: 'Hang on, it might change while loading to the destination. If this is not a OneNote page, free to click on the P3X OneNote menu home'
+        disallowedContent: 'Conteúdo desabilitado! Se não estiver funcionando, espere, ele será redefinido para o padrão. (Máximo de 5 segundos).',
+        unknownLink: 'Espere um pouco, pode mudar durante o carregamento para o destino. Se esta não for uma página do OneNote, sinta-se livre para clicar na página inicial do P3X no menu',
+        back: 'Voltar',
+        forward: 'Prosseguir',
     },
     dialog: {
         info: 'Informações',
@@ -74,7 +83,7 @@ const translation = {
         save: 'Salvar',
         clear: 'Limpar',
         go: 'Ir',
-
+        delete: 'Excluir',
     },
     menu: {
         action: 'Ação',
@@ -116,6 +125,15 @@ const translation = {
                 'de-DE': 'Deutsch / German',
                 'pt-BR': 'Português / Portuguese',
                 'es-ES': 'Español / Spanish',
+                'fr-FR': 'Français / French',
+                'nl-NL': 'Nederlands / Dutch',
+                'it-IT': 'Italiano / Italian',
+                'zh-CN': '简体中文 / Simplified Chinese',
+                'ru-RU': 'Русский / Russian',
+                'pl-PL': 'Polski / Polish',
+                'tr-TR': 'Türkçe / Turkish',
+                'ja-JP': '日本語 / Japanese',
+
             }
         },
     },
@@ -132,7 +150,20 @@ const translation = {
             return 'Baixado ' + opts.progressObj.percent + '%'
         },
         'update-downloaded': 'Atualização baixada. Você precisa reiniciar o app para fazer efeito.'
-    }
+    },
+    bookmarks: {
+        title: 'Favoritas',
+        add: 'Adicionar favorito',
+        edit: 'Editar favoritos',
+        form: {
+            title: 'Título',
+            url: 'URL'
+        }
+    },
+    validation: {
+        required: 'Requeridas',
+        url: 'URL inválida',
+    },
 };
 
 module.exports = translation;

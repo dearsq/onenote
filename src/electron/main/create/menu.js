@@ -41,10 +41,71 @@ function mainMenu() {
         languageCheckbox.push(transMenu)
     }
 
+    const bookmarksMenu = [
+        {
+            label: global.p3x.onenote.lang.bookmarks.add,
+            click: () => {
+                global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action-bookmark-add', {
+                    edit: false,
+                })
+            }
+        },
+    ]
+
+    const bookmarks = global.p3x.onenote.conf.get('bookmarks') || []
+
+    if (bookmarks.length > 0) {
+        bookmarksMenu.push({
+            label: global.p3x.onenote.lang.bookmarks.edit,
+            type: 'checkbox',
+            checked: global.p3x.onenote.bookmarksEditMode,
+            click: (menuItem, browserWindow, event) => {
+                global.p3x.onenote.bookmarksEditMode = !global.p3x.onenote.bookmarksEditMode
+                /*
+                Menu.getApplicationMenu().popup({
+                    window: browserWindow,
+                    x: event.x,
+                    y: event.y,
+                })
+                */
+            }
+        })
+        bookmarksMenu.push({
+            type: 'separator'
+        })
+    }
+
+    const naturalCompareDocument = require('../../lib/natural-compare-document')
+    let bookmarksSort = bookmarks.sort(naturalCompareDocument({
+        byProperty: 'title'
+    }))
+    for(let bookmarkIndex in bookmarksSort) {
+        const bookmark = bookmarksSort[bookmarkIndex]
+        const thisBookmarkIndex = bookmarkIndex
+        bookmarksMenu.push({
+            label: bookmark.title,
+            click: () => {
+                if (global.p3x.onenote.bookmarksEditMode !== true) {
+                    global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action-bookmark-open', bookmark)
+                } else {
+                    global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action-bookmark-add', {
+                        edit: true,
+                        index: thisBookmarkIndex,
+                        model: bookmark,
+                    })
+                }
+            }
+        })
+    }
+
     const template = [
         {
             label: global.p3x.onenote.title,
             submenu: menus.default(),
+        },
+        {
+            label: global.p3x.onenote.lang.bookmarks.title,
+            submenu: bookmarksMenu
         },
         {
             label: p3x.onenote.lang.menu.action,
@@ -62,23 +123,78 @@ function mainMenu() {
             label: global.p3x.onenote.lang.label.settings,
             submenu: [
                 {
+                    label: global.p3x.onenote.lang.label.hideMenu,
+                    type: 'checkbox',
+                    checked: global.p3x.onenote.optionToHideMenu,
+                    click: () => {
+                        try {
+
+                            global.p3x.onenote.optionToHideMenu = !global.p3x.onenote.optionToHideMenu
+                            global.p3x.onenote.conf.set('option-to-hide-menu', global.p3x.onenote.optionToHideMenu,);
+
+                            if (!global.p3x.onenote.optionToHideMenu) {
+                                global.p3x.onenote.window.onenote.setAutoHideMenuBar(false)
+                                global.p3x.onenote.window.onenote.setMenuBarVisibility(true)
+                            } else {
+                                const message = `
+${global.p3x.onenote.lang.label.optionToHideMenuState.yes}
+
+${global.p3x.onenote.lang.restart}
+
+${global.p3x.onenote.lang.slow}
+`
+
+                                dialog.showMessageBox( global.p3x.onenote.window.onenote, {
+                                    type: 'info',
+//                                title: global.p3x.onenote.lang.dialog.minimizationBehavior.title,
+                                    message: message,
+                                    buttons: [global.p3x.onenote.lang.button.ok]
+                                }).then(() => {
+                                    require('../actions/relaunch')()
+                                }).catch(e => console.error(e))
+
+                            }
+
+
+                        } catch(e) {
+                            console.error(e)
+                        }
+                    }
+                },
+                {
                     label: global.p3x.onenote.lang.label.disableHide.checkbox,
                     type: 'checkbox',
                     checked: !global.p3x.onenote.disableHide,
                     click: () => {
-                        global.p3x.onenote.disableHide = !global.p3x.onenote.disableHide;
-                        global.p3x.onenote.conf.set('disable-hide', global.p3x.onenote.disableHide);
+                        try {
+                            global.p3x.onenote.disableHide = !global.p3x.onenote.disableHide;
+                            global.p3x.onenote.conf.set('disable-hide', global.p3x.onenote.disableHide);
 
-                        const message = global.p3x.onenote.disableHide ? global.p3x.onenote.lang.label.disableHide.message.yes : global.p3x.onenote.lang.label.disableHide.message.no
+                            let message = global.p3x.onenote.disableHide ? global.p3x.onenote.lang.label.disableHide.message.yes : global.p3x.onenote.lang.label.disableHide.message.no
 
-                        dialog.showMessageBox(global.p3x.onenote.window.onenote, {
-                            type: 'info',
-                            title: global.p3x.onenote.lang.dialog.minimizationBehavior.title,
-                            message: message,
-                            buttons: [global.p3x.onenote.lang.button.ok]
-                        })
-                        mainMenu()
-                        mainTray()
+                            if (global.p3x.onenote.disableHide === true && global.p3x.onenote.tray !== undefined) {
+                                message += `
+
+${global.p3x.onenote.lang.restart}
+
+${global.p3x.onenote.lang.slow}
+`
+                            }
+
+                            dialog.showMessageBox( global.p3x.onenote.window.onenote, {
+                                type: 'info',
+                                title: global.p3x.onenote.lang.dialog.minimizationBehavior.title,
+                                message: message,
+                                buttons: [global.p3x.onenote.lang.button.ok]
+                            }).then(() => {
+                                console.log('reloading tray settings')
+                                mainMenu()
+                                mainTray({ allowQuit: true })
+                            })
+
+                        } catch(e) {
+                            console.error(e)
+                        }
                     }
                 },
                 {
@@ -116,7 +232,21 @@ function mainMenu() {
                 {
                     label: global.p3x.onenote.lang.label.setProxy,
                     click: action.setProxy,
+                },
+                {
+                    label: global.p3x.onenote.lang.label.darkThemeInvert.title,
+                    type: 'checkbox',
+                    checked: global.p3x.onenote.darkThemeInvert,
+                    click: () => {
+                        global.p3x.onenote.darkThemeInvert = !global.p3x.onenote.darkThemeInvert
+                        global.p3x.onenote.conf.set('darkThemeInvert', global.p3x.onenote.darkThemeInvert)
+                        global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action', {
+                            action: 'dark-theme-invert',
+                            darkThemeInvert: global.p3x.onenote.darkThemeInvert,
+                        })
+                    },
                 }
+
             ],
         },
         {
@@ -236,9 +366,9 @@ function mainMenu() {
         },
     ]
 
-    if (process.env.APPIMAGE !== undefined) {
-        template[6].submenu.push({type: 'separator'})
-        template[6].submenu.push({
+    //if (process.env.APPIMAGE !== undefined) {
+        template[7].submenu.push({type: 'separator'})
+        template[7].submenu.push({
                 label: global.p3x.onenote.lang.menu.help.checkUpdates,
                 click: () => {
                     const {autoUpdater} = require("electron-updater");
@@ -246,7 +376,7 @@ function mainMenu() {
                 }
             },
         )
-    }
+    //}
 
 
     const menu = Menu.buildFromTemplate(template)

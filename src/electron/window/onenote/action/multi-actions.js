@@ -1,4 +1,4 @@
-const { remote } = require('electron')
+const remote = require('@electron/remote')
 
 const multiActions = (data) => {
     const webview = global.p3x.onenote.webview;
@@ -29,9 +29,8 @@ const multiActions = (data) => {
         case 'restart':
             //const session = webview.getWebContents().session;
             const session = remote.webContents.fromId(webview.getWebContentsId()).session
-            session.clearStorageData(() => {
-                //console.log('storage cleared');
-                webview.reload();
+            session.clearStorageData().then(() => {
+                webview.reload()
             })
             break;
 
@@ -40,7 +39,7 @@ const multiActions = (data) => {
             break;
 
         case 'corporate':
-            webview.src = 'https://www.onenote.com/notebooks?auth=2&auth_upn=my_corporate_email_address'
+            webview.src = 'https://www.onenote.com/notebooks?auth=2'
             break;
 
         case 'get-location':
@@ -49,6 +48,15 @@ const multiActions = (data) => {
 
         case 'toast':
             require('./multi-action/toast')(data)
+            break;
+
+        case 'dark-theme-invert':
+            document.body.classList.remove('p3x-dark-mode-invert-quirks')
+            if (data.darkThemeInvert === true) {
+                document.body.classList.add('p3x-dark-mode-invert-quirks')
+            }
+
+//            alert(`darkThemeInvert: ${data.darkThemeInvert}`)
             break;
     }
 }

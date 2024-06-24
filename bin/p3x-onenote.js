@@ -22,9 +22,9 @@ const start = async() => {
 Version=1.0
 Type=Application
 Name=P3X Onenote
-Icon=${path.resolve(__dirname + '/../src/electron/images/256x256.png')}
+Icon=${path.resolve(__dirname + '/../src/electron/images/128x128.png')}
 Exec=${__filename}
-Comment=https://www.patrikx3.com
+Comment=https://www.corifeus.com/onenote
 Categories=Office;
 Terminal=false
 `)
@@ -33,7 +33,7 @@ Terminal=false
             await utils.childProcess.exec('gtk-update-icon-cache || true');
         }
 
-        await utils.childProcess.exec(`${__dirname}/../node_modules/.bin/electron ${path.resolve(__dirname + '/../')}`, true);
+        await utils.childProcess.exec(`${__dirname}/../node_modules/.bin/electron ${path.resolve(__dirname + '/../')} ${process.argv.join(' ')}`, true);
     } catch (e) {
         console.error(e);
         throw e;

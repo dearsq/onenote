@@ -3,21 +3,40 @@ const {BrowserWindow, app} = require('electron');
 
 function createWindow() {
 
+    const remoteMain = require("@electron/remote/main")
+    remoteMain.initialize()
 
     global.p3x.onenote.window.onenote = new BrowserWindow({
         icon: global.p3x.onenote.iconFile,
         title: `${global.p3x.onenote.title} v${global.p3x.onenote.pkg.version}`,
         backgroundColor: 'black',
-        autoHideMenuBar: true,
+        autoHideMenuBar: global.p3x.onenote.optionToHideMenu,
         webPreferences: {
+            nativeWindowOpen: true,
+            worldSafeExecuteJavaScript: true,
             nodeIntegration: true,
+            nodeIntegrationInSubFrames: true,
+            contextIsolation: false,
             webviewTag: true,
         }
     });
-
-    global.p3x.onenote.setVisible(true);
-
     global.p3x.onenote.window.onenote.loadURL(`file://${__dirname}/../../../window/onenote/index.html`);
+
+    global.p3x.onenote.window.onenote.webContents.on("did-attach-webview", (_, contents) => {
+        contents.setWindowOpenHandler((details) => {
+            global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-new-window', details);
+            return { action: 'deny' }
+        })
+      })
+
+    remoteMain.enable(global.p3x.onenote.window.onenote.webContents)
+
+      
+    if (process.env.NODE_ENV === 'debug') {
+        global.p3x.onenote.window.onenote.openDevTools()
+    }
+
+    global.p3x.onenote.setVisible(process.argv.includes('--minimized') ? false : true);
 
     global.p3x.onenote.window.onenote.on('minimize', function (event) {
         //event.preventDefault()
@@ -65,13 +84,16 @@ function createWindow() {
         })
     });
 
+    if (!process.argv.includes('--minimized')) {
+        //const windowBounds = global.p3x.onenote.conf.get('window-bounds');
+        const maximized = global.p3x.onenote.conf.get('maximized');
 
-    //const windowBounds = global.p3x.onenote.conf.get('window-bounds');
-    const maximized = global.p3x.onenote.conf.get('maximized');
+        if (maximized === true) {
+            global.p3x.onenote.window.onenote.maximize()
+        }
 
-    if (maximized === true) {
-        global.p3x.onenote.window.onenote.maximize()
     }
+
     /*
     else if (windowBounds !== null && windowBounds !== undefined) {
         global.p3x.onenote.window.onenote.setBounds(windowBounds);
@@ -103,13 +125,15 @@ function createWindow() {
 
     const {autoUpdater} = require("electron-updater");
 
-    autoUpdater.on('checking-for-update', () => {
+    autoUpdater.on('checking-for-update', (info) => {
+        console.log('checking-for-update', info)
         global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action', {
             action: 'toast',
             message: global.p3x.onenote.lang.updater["checking-for-update"]
         })
     })
     autoUpdater.on('update-available', (info) => {
+        console.log('update-available', info)
         global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action', {
             action: 'toast',
             message: global.p3x.onenote.lang.updater["update-available"]
@@ -118,6 +142,7 @@ function createWindow() {
 
     let firstCheck = true
     autoUpdater.on('update-not-available', (info) => {
+        console.log('update-not-available', info)
 
         if (firstCheck) {
             firstCheck = false
@@ -130,14 +155,18 @@ function createWindow() {
         })
     })
     autoUpdater.on('error', (error) => {
-        console.error(error)
-        global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action', {
-            action: 'toast',
-            error: error,
-            message: global.p3x.onenote.lang.updater["error"]({
-                errorMessage: error.message.split('\n')[0]
-            })
-        })
+        console.error('error', error)
+
+        /*
+        if (global.p3x.onenote.window.onenote) {
+            global.p3x.onenote.window.onenote.webContents.send('p3x-onenote-action', {
+                action: 'toast',
+                error: error,
+                message: global.p3x.onenote.lang.updater["error"]({
+                    errorMessage: error.message.split('\n')[0]
+                })
+            })    
+        }*/
     })
 
     /*
@@ -165,6 +194,7 @@ function createWindow() {
 
     });
     autoUpdater.checkForUpdatesAndNotify();
+
 }
 
 module.exports = createWindow;

@@ -1,8 +1,15 @@
 :root {
-    --p3x-onenote-navbar-bg: #7719aa;
-    --p3x-onenote-navbar-color: white;
+/*
+    --p3x-onenote-navbar-color: #7719aa;
+*/    
+    --p3x-onenote-navbar-color: black;
+    --p3x-onenote-navbar-bg: white;
     --p3x-onenote-bottom-bar-height: 20px;
     --p3x-onenote-bottom-bar-font-size: 12px;
+}
+
+body.p3x-dark-mode-invert-quirks {
+    filter: invert(1) hue-rotate(180deg);
 }
 
 body {
@@ -12,6 +19,7 @@ body {
     overflow: hidden;
 }
 
+/*
 md-dialog md-dialog-actions {
     display: block !important;
 }
@@ -19,6 +27,7 @@ md-dialog md-dialog-actions {
 md-dialog md-dialog-actions button {
     float: right !important;
 }
+ */
 
 body * {
     transition: none !important;
@@ -52,5 +61,7 @@ body * {
 
 .md-toast-content {
     z-index: 110;
+}
 
+.p3x-onenote-toast-default .md-toast-content {
 }

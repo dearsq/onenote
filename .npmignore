@@ -14,3 +14,10 @@
 /corifeus-boot.json
 /dist
 /secure
+/.github
+/.vscode
+/.flatpak-builder
+/.build
+/repo
+/generated-sources.json
+/com.patrikx3.onenote.yml
